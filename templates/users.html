@@ -3,6 +3,7 @@
 {% if error %}
 	{{ error }}
 {% else %}
+<h1>CodeChef - Comparer</h1>
 <div class = "table-responsive">
 	<h2>Ranks</h2>
 	<table class = "table table-bordered table-condensed table-striped table-hover">
@@ -42,49 +43,54 @@
 <div class = "table-responsive">
 	<h2>Submission Details</h2>
 	<table class = "table table-bordered table-condensed table-striped table-hover">
-		<tr>
-			<td></td>
-			<td><a href={{data1['link']}}>{{data1['id']}}</a></td>
-			<td><a href={{data2['link']}}>{{data2['id']}}</a></td>		
-		</tr>
-		<tr>
-			<td>Problems Solved</td>
-			{% if data1['stats']['solved'] == data2['stats']['solved'] %}
-				<td class = "warning">{{ data1['stats']['solved'] }}</td>
-				<td class = "warning">{{ data2['stats']['solved'] }}</td>
-			{% elif data1['stats']['solved'] > data2['stats']['solved'] %}
-				<td class = "success">{{ data1['stats']['solved'] }}</td>
-				<td class = "danger">{{ data2['stats']['solved'] }}</td>
-			{% else %}
-				<td class = "danger">{{ data1['stats']['solved'] }}</td>
-				<td class = "success">{{ data2['stats']['solved'] }}</td>
-			{% endif %}
-		</tr>
-		<tr>
-			<td>Solutions Submitted</td>
-			<td>{{ data1['stats']['submitted'] }}</td>
-			<td>{{ data2['stats']['submitted'] }}</td>
-		</tr><tr>
-			<td>Solutions Accepted</td>
-			<td>{{ data1['stats']['ac'] }}</td>
-			<td>{{ data2['stats']['ac'] }}</td>
-		</tr><tr>
-			<td>Wrong Answer</td>
-			<td>{{ data1['stats']['wa'] }}</td>
-			<td>{{ data2['stats']['wa'] }}</td>
-		</tr><tr>
-			<td>Compile Error</td>
-			<td>{{ data1['stats']['ce'] }}</td>
-			<td>{{ data2['stats']['ce'] }}</td>
-		</tr><tr>
-			<td>Runtime Error</td>
-			<td>{{ data1['stats']['re'] }}</td>
-			<td>{{ data2['stats']['re'] }}</td>
-		</tr><tr>
-			<td>Time Limit Exceeded</td>
-			<td>{{ data1['stats']['tle'] }}</td>
-			<td>{{ data2['stats']['tle'] }}</td>
-		</tr>
+		<thead>
+			<tr>
+				<td></td>
+				<td><a href={{data1['link']}}>{{data1['id']}}</a></td>
+				<td><a href={{data2['link']}}>{{data2['id']}}</a></td>		
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Problems Solved</td>
+				{% if data1['stats']['solved'] == data2['stats']['solved'] %}
+					<td class = "warning">{{ data1['stats']['solved'] }}</td>
+					<td class = "warning">{{ data2['stats']['solved'] }}</td>
+				{% elif data1['stats']['solved'] > data2['stats']['solved'] %}
+					<td class = "success">{{ data1['stats']['solved'] }}</td>
+					<td class = "danger">{{ data2['stats']['solved'] }}</td>
+				{% else %}
+					<td class = "danger">{{ data1['stats']['solved'] }}</td>
+					<td class = "success">{{ data2['stats']['solved'] }}</td>
+				{% endif %}
+			</tr>
+			<tr>
+				<td>Solutions Submitted</td>
+				<td>{{ data1['stats']['submitted'] }}</td>
+				<td>{{ data2['stats']['submitted'] }}</td>
+			</tr><tr>
+				<td>Solutions Accepted</td>
+				<td>{{ data1['stats']['ac'] }}</td>
+				<td>{{ data2['stats']['ac'] }}</td>
+			</tr><tr>
+				<td>Wrong Answer</td>
+				<td>{{ data1['stats']['wa'] }}</td>
+				<td>{{ data2['stats']['wa'] }}</td>
+			</tr><tr>
+				<td>Compile Error</td>
+				<td>{{ data1['stats']['ce'] }}</td>
+				<td>{{ data2['stats']['ce'] }}</td>
+			</tr><tr>
+				<td>Runtime Error</td>
+				<td>{{ data1['stats']['re'] }}</td>
+				<td>{{ data2['stats']['re'] }}</td>
+			</tr><tr>
+				<td>Time Limit Exceeded</td>
+				<td>{{ data1['stats']['tle'] }}</td>
+				<td>{{ data2['stats']['tle'] }}</td>
+			</tr>
+		</tbody>
+		
 	</table>
 </div>
 

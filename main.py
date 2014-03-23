@@ -54,10 +54,8 @@ def index():
 @app.route('/users/<name1>/<name2>')
 @app.route('/users/<name1>/')
 def user(name1=None,name2=None):
-	
-	data1 = getData(name1)
 	db = get_db()
-
+	data1 = getData(name1)
 	if 'error' in data1:
 		return render_template('user.html',error="Either invalid username or some problem with the site!")
 	compute(data1['contests'])
@@ -67,10 +65,10 @@ def user(name1=None,name2=None):
 		if 'error' in data2:
 			return render_template('user.html',error="Either invalid username or some problem with the site!")
 		lis = [val for val in data1['contests'] if val in data2['contests']]
-		contestData = getAllRanksMulti(lis, name1, name2)
+		contestData = getAllRanksMulti(lis, name1, name2, db)
 		return render_template('users.html', data1=data1,data2=data2, contestData=contestData, union=lis)
 	else:
-		contestData = getAllRanks(data1['contests'], name1)
+		contestData = getAllRanks(data1['contests'], name1, db)
 		return render_template('user.html',data1=data1,contestData=contestData)
 
 def compute(contests):
@@ -81,7 +79,7 @@ def compute(contests):
 		entries = list(entries)
 		if len(entries) > 0:
 			continue
-		print (cont)
+		print cont
 		data = loadContestData(cont)
 		for row in data:
 			db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', row)

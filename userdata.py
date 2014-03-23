@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-from main import get_db
 
 
 def invalidUser(soup):
@@ -13,7 +12,13 @@ def invalidUser(soup):
 
 def getData(user):
 	error = None
-	ob = requests.get("http://www.codechef.com/users/"+user)	
+	for i in range(0,10):
+		try:
+			ob = requests.get("http://www.codechef.com/users/"+user)
+		except:
+			continue
+		else:
+			break
 	page_source = ob.content
 	soup = BeautifulSoup(page_source)
 	if invalidUser(soup):
@@ -21,15 +26,15 @@ def getData(user):
 	stats = getStats(soup)
 	ranks = getRanks(soup)
 	contests = getContests(soup)
-	db = get_db()
-	for cont in contests:
-		cur = db.execute('select * from entries where contest=?',(cont, ))
-		entries = cur.fetchall()
-		entries = list(entries)
-		if len(entries) > 0:
-			continue
-		print (cont)
-		loadContestData(cont)
+	# db = get_db()
+	# for cont in contests:
+	# 	cur = db.execute('select * from entries where contest=?',(cont, ))
+	# 	entries = cur.fetchall()
+	# 	entries = list(entries)
+	# 	if len(entries) > 0:
+	# 		continue
+	# 	print (cont)
+	# 	loadContestData(cont)
 	if 'error' in stats or 'error' in ranks or 'error' in contests:
 		return {"error": "Data error."}
 	return {'link': "http://www.codechef.com/users/"+user,'id': user,'stats': stats, 'ranks': ranks, 'contests': contests}
@@ -96,81 +101,75 @@ def getStats(soup):
 
 
 def loadContestData(contest):
-	ob = requests.get("http://www.codechef.com/rankings/"+contest)
+	for i in range(0,10):
+		try:
+			ob = requests.get("http://www.codechef.com/rankings/"+contest)
+		except:
+			continue
+		else:
+			break
 	page_source = ob.content
 	soup = BeautifulSoup(page_source)
-	db = get_db()
+	# db = get_db()
 	div_prob = soup.find("div", attrs={"class": "prob"})
 	if not div_prob:
-		print ("error1")
+		print "error1"
 		return {"error": "The page does not seem to be correct, check contest exists"}
 	all_users = div_prob.findAll("tr")
 	all_users = all_users[1:]
 	if not all_users:
-		print ("error2")
+		print "error2"
 		return {"error": "Nobody took part in this contest."}
+	ret = []
 	for user in all_users:
 		userid = user.find("a").string
 		rank = int(user.find("b").string)
 		score = float(user.findAll("td")[-1].string)
-		print (userid, rank, score)
-		db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', [str(contest), userid, rank, score])
-	db.commit()
+		#print (userid, rank, score)
+		ret.append([str(contest), userid, rank, score])
+		# db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', [str(contest), userid, rank, score])
+	return ret
+	# db.commit()
 	# db.close()
 
 
-def getDetails(contest):
-    print ("http://www.codechef.com/rankings/"+contest)
-    ob = requests.get("http://www.codechef.com/rankings/"+contest)
-    page_source = ob.content
-    soup = BeautifulSoup(page_source)
-    div_prob = soup.find("div", attrs={"class": "prob"})
-    if not div_prob:
-        return {"error": "The page does not seem to be correct, check contest exists"}
-    all_users = div_prob.findAll("tr")
-    all_users = all_users[1:]
-    if not all_users:
-        return {"error": "Nobody took part in this contest."}
-    # return {"users": all_users}
-    return all_users
+# def getDetails(contest):
+#     # print "http://www.codechef.com/rankings/"+contest
+#     ob = requests.get("http://www.codechef.com/rankings/"+contest)
+#     page_source = ob.content
+#     soup = BeautifulSoup(page_source)
+#     div_prob = soup.find("div", attrs={"class": "prob"})
+#     if not div_prob:
+#         return {"error": "The page does not seem to be correct, check contest exists"}
+#     all_users = div_prob.findAll("tr")
+#     all_users = all_users[1:]
+#     if not all_users:
+#         return {"error": "Nobody took part in this contest."}
+#     # return {"users": all_users}
+#     return all_users
 
 
-def userRankScore(contest, user):
-    # for one_user in user_list:
-    #     if '>' + user + '<' in str(one_user):
-    #         rank = one_user.find("b").string
-    #         score = one_user.findAll("td")[-1].string
-    #         return {"rank":rank, "score": score}
-    # return {"error": "The user did not participate in this contest."}
-    db = get_db()
+def userRankScore(contest, user, db):
+    # print "LOL"
+    # db = get_db()
     t = (user, contest, )
     cur = db.execute("SELECT * FROM entries WHERE user=? AND contest=?",t).fetchall()[0]
     return {"rank": cur['rank'], "score": cur['score']}
 
-def getAllRanksMulti(contests, user1, user2):
+def getAllRanksMulti(contests, user1, user2, db):
 
 	allRanks1 = {}
 	allRanks2 = {}
 	for contest in contests:
-		allRanks1[contest] = userRankScore(contest, user1)
-		allRanks2[contest] = userRankScore(contest, user2)
+		allRanks1[contest] = userRankScore(contest, user1, db)
+		allRanks2[contest] = userRankScore(contest, user2, db)
 	return {user1: allRanks1, user2: allRanks2}
 
 
-def getAllRanks(contests, user):
+def getAllRanks(contests, user, db):
 	allRanks = {}
 	for contest in contests:
-		# con = str(contest)
-		# db = get_db()
-		# t = (user, contest, )
-		# cur = db.execute("SELECT * FROM entries WHERE user=? AND contest=?",t).fetchall()[0]
-		# allRanks[con] = {"rank": cur['rank'], "score": cur['score']}
-		allRanks[contest] = userRankScore(contest, user)
-		# print (con, allRanks[con])
+		allRanks[contest] = userRankScore(contest, user, db)
 	return allRanks
-
-# users = getDetails('COOK42')
-# print(userRankScore(users, 'ACRush'))
-
 
 
