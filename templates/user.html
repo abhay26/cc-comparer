@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block body %}
+{% if error %}
+	{{ error }}
+{% else %}
+<div class = "table-responsive">
+	<h2>Ranks</h2>
+	<table class = "table table-bordered table-condensed table-striped table-hover">
+		<tr>
+			<td>Handle</td>
+			<td><a href={{data1['link']}}>{{data1['id']}}</a></td>
+		</tr>
+		<tr>
+			<td>Global Rank (Long)</td>
+			<td>{{data1['ranks']['long_global']}}</td>
+		</tr>
+		<tr>
+			<td>Country Rank (Long)</td>
+			<td>{{data1['ranks']['long_country']}}</td>
+		</tr>
+		<tr>
+			<td>Global Rank (Short)</td>
+			<td>{{data1['ranks']['short_global']}}</td>
+		</tr>
+		<tr>
+			<td>Country Rank (Short)</td>
+			<td>{{data1['ranks']['short_country']}}</td>
+		</tr>
+	</table>
+</div>
+
+
+<div class = "table-responsive">
+	<h2>Submission Details</h2>
+	<table class="table table-bordered table-condensed table-striped table-hover">
+		<tr>
+			<td>Problems Solved</td>
+			<td>{{ data1['stats']['solved'] }}</td>
+		</tr>
+		<tr>
+			<td>Solutions Submitted</td>
+			<td>{{ data1['stats']['submitted'] }}</td>
+		</tr><tr>
+			<td>Solutions Accepted</td>
+			<td>{{ data1['stats']['ac'] }}</td>
+		</tr><tr>
+			<td>Wrong Answer</td>
+			<td>{{ data1['stats']['wa'] }}</td>
+		</tr><tr>
+			<td>Compile Error</td>
+			<td>{{ data1['stats']['ce'] }}</td>
+		</tr><tr>
+			<td>Runtime Error</td>
+			<td>{{ data1['stats']['re'] }}</td>
+		</tr><tr>
+			<td>Time Limit Exceeded</td>
+			<td>{{ data1['stats']['tle'] }}</td>
+		</tr>
+	</table>
+</div>
+
+
+
+	
+	<div class="table-responsive">
+		<h2>Contest Details</h2>
+		<table class="table table-bordered table-condensed table-striped table-hover">
+			<thead>
+				<tr>
+					<td>Contest</td>
+					<td>Rank</td>
+					<td>Score</td>
+				</tr>
+			</thead>
+			<tbody>
+				{% for con in data1['contests'] %}
+				<tr>
+					<td><a href={{ "http://www.codechef.com/rankings/" + con }}>{{ con }}</a></td>
+					<td>{{contestData[con]['rank']}}</td>
+					<td>{{contestData[con]['score']}}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+
+{% endif %}
+{% endblock %}
