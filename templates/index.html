@@ -5,16 +5,11 @@
 {% block body %}
 
     <form class="form-user" action="{{ url_for('display') }}" method=post role="form">
-      <!-- <dl> -->
+      <h2 class="form-user-heading">CodeChef-Comparer</h2>
       <input type=text class="form-control" placeholder="CodeChef ID 1 (Required)" name=id1 required autofocus>
       <input type=text class="form-control" placeholder="CodeChef ID2" name=id2>
       <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 
-        <!-- <dt>Codechef ID: -->
-        <!-- <dd><input type=text size=30 name=id1> -->
-        <!-- <dt>Codechef ID2: -->
-        <!-- <dd><input type=text size=30 name=id2 > -->
-        <!-- <dd><input type=submit value=Submit!> -->
-      <!-- </dl> -->
+
     </form>
 {% endblock %}

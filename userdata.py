@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
-import os
-from main import *
+from main import get_db
+
 
 def invalidUser(soup):
 	#print (soup)

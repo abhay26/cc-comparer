@@ -49,14 +49,6 @@ def close_db(error):
 
 @app.route('/')
 def index():
-	# loadContestData("COOK42")
-	# loadContestData("JAN14")
-	# db = get_db()
-	# t = ('abhay26',)
-	# cur = db.execute("SELECT * FROM entries WHERE user=?",t)	
-	# entries = cur.fetchall()
-	# for row in entries:
-	# 	print (row['contest'],row['user'], row['rank'], row['score'])
 	return render_template('index.html')
 
 @app.route('/users/<name1>/<name2>')
@@ -65,19 +57,13 @@ def user(name1=None,name2=None):
 	
 	data1 = getData(name1)
 	db = get_db()
-	# db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', ['dgdsgs',data1['id'], data1['ranks']['short_country'],'33431'])
-	# db.commit()
-	# db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', ['dgdsgs',data1['id'], data1['ranks']['short_country'],'33431'])
-	# db.commit()
-	# cur = db.execute('select * from entries')
-	# entries = cur.fetchall()
-	# for entry in entries:
-	# 	print (entry['contest'], entry['user'], entry['rank'], entry['score'])
-	# flash('User inserted in DB')
+
 	if 'error' in data1:
 		return render_template('user.html',error="Either invalid username or some problem with the site!")
+	compute(data1['contests'])
 	if name2:
 		data2 = getData(name2)
+		compute(data2['contests'])
 		if 'error' in data2:
 			return render_template('user.html',error="Either invalid username or some problem with the site!")
 		lis = [val for val in data1['contests'] if val in data2['contests']]
@@ -87,18 +73,25 @@ def user(name1=None,name2=None):
 		contestData = getAllRanks(data1['contests'], name1)
 		return render_template('user.html',data1=data1,contestData=contestData)
 
-
+def compute(contests):
+	db = get_db()
+	for cont in contests:
+		cur = db.execute('select * from entries where contest=?',(cont, ))
+		entries = cur.fetchall()
+		entries = list(entries)
+		if len(entries) > 0:
+			continue
+		print (cont)
+		data = loadContestData(cont)
+		for row in data:
+			db.execute('insert into entries (contest, user, rank, score) values (?, ?, ?, ?)', row)
+		db.commit()
 
 @app.route('/display', methods=['POST'])
 def display():
-	if request.form['id1'] == '':
-	 	return render_template('user.html',error="Enter first ID!")
-
-	#return user(request.form['id1'],request.form['id2'])
 	return redirect(url_for('user', name1=request.form['id1'], name2=request.form['id2']))
 
 
-	
 if __name__ == '__main__':
 	# init_db()
 	app.run(debug=True)
