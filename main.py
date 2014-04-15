@@ -61,9 +61,9 @@ def user(name1=None,name2=None):
 	compute(data1['contests'])
 	if name2:
 		data2 = getData(name2)
-		compute(data2['contests'])
 		if 'error' in data2:
 			return render_template('user.html',error="Either invalid username or some problem with the site!")
+		compute(data2['contests'])
 		lis = [val for val in data1['contests'] if val in data2['contests']]
 		contestData = getAllRanksMulti(lis, name1, name2, db)
 		return render_template('users.html', data1=data1,data2=data2, contestData=contestData, union=lis)
