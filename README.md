@@ -1,3 +1,5 @@
 Compares ranks of two people on codechef.
 
-Used Flask and BootStrap.
+Used Flask, BeautifulSoup and BootStrap.
+
+View it live: http://codechefcomparer.herokuapp.com
